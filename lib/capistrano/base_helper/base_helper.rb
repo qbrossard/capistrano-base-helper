@@ -102,7 +102,7 @@ module Capistrano
       @@capistrano_instance.upload temp_file, temp_file, :via => :scp
       # create any folders required,
       # move temporary file to remote file
-      @@capistrano_instance.run "#{use_sudo ? @@capistrano_instance.sudo : ""} mkdir -p #{Pathname.new(remote_file).dirname}; #{use_sudo ? "sudo" : ""} mv #{temp_file} #{remote_file}"
+      @@capistrano_instance.run "#{sudo_cmd(use_sudo)} mkdir -p #{Pathname.new(remote_file).dirname}; #{sudo_cmd(use_sudo)} mv #{temp_file} #{remote_file}"
       # remove temp file
       `rm #{temp_file}`
     end
@@ -124,9 +124,9 @@ module Capistrano
 
     def prepare_path(path, user, group, use_sudo = false)
       commands = []
-      commands << "#{use_sudo ? @@capistrano_instance.sudo : ""} mkdir -p #{path}"
-      commands << "#{use_sudo ? @@capistrano_instance.sudo : ""} chown #{user}:#{group} #{path} -R"
-      commands << "#{use_sudo ? @@capistrano_instance.sudo : ""} chmod +rw #{path}"
+      commands << "#{sudo_cmd(use_sudo)} mkdir -p #{path}"
+      commands << "#{sudo_cmd(use_sudo)} chown #{user}:#{group} #{path} -R"
+      commands << "#{sudo_cmd(use_sudo)} chmod +rw #{path}"
       @@capistrano_instance.run commands.join(" &&")
     end
 
@@ -143,5 +143,11 @@ module Capistrano
       results == [true]
     end
 
+  end
+  ##
+ # sudo command to use
+ # @use_sudo true/false for effectively using sudo	
+  def sudo_cmd(use_sudo)
+    use_sudo ? @@capistrano_instance.sudo : "" 
   end
 end
