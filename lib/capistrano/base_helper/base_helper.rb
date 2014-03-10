@@ -99,10 +99,10 @@ module Capistrano
       # write temp file
       File.open(temp_file, 'w+') { |f| f << erb_buffer }
       # upload temp file
-      @@capistrano_instance.upload temp_file, temp_file, :via => :scp
+      @@capistrano_instance.upload temp_file, remote_file, :via => :scp
       # create any folders required,
       # move temporary file to remote file
-      @@capistrano_instance.run "#{sudo_cmd(use_sudo)} mkdir -p #{Pathname.new(remote_file).dirname}; #{sudo_cmd(use_sudo)} mv #{temp_file} #{remote_file}"
+      #@@capistrano_instance.run "#{sudo_cmd(use_sudo)} mkdir -p #{Pathname.new(remote_file).dirname}; #{sudo_cmd(use_sudo)} mv #{temp_file} #{remote_file}"
       # remove temp file
       `rm #{temp_file}`
     end
